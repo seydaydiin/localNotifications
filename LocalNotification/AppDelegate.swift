@@ -8,15 +8,51 @@
 import UIKit
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+       
+        //bildirimlerin yönetildiği bir bildirim merkezi oluşturur
+        let center = UNUserNotificationCenter.current()
+        
+        //delegenin kullanılacağını belirtilir.Bildirimlerin nasıl işleneceği ve yönlendirileceği belirlenir.
+           center.delegate = self
+        
+      
+       //kullanıcıdan bildirimlere erişim izni almak için bir istekte bulunur.Bildirim erişim izninin nasıl görüntüleneceği belirlenir.
+        center.requestAuthorization(options: [.alert,.badge,.sound], completionHandler: {(accepted,error) in
+            
+            //eğer kullanıcı bildirim erişimini reddederse veya izin vermezse bir hata mesajı görüntüler.
+            if !accepted {
+                print("Notification access denied")
+            }
+            
+        })
         return true
     }
+    
 
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+
+        //completionHandler parametresi aracılığıyla bu fonksiyon, bildirimin nasıl görüntüleneceğini belirleyen bir dizi seçeneği alır.
+        completionHandler( [.list, .banner, .badge, .sound])
+    }
+    
+    
+    
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        completionHandler()
+    }
+    
+    
+    
+    
+    
+ 
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
